@@ -37,18 +37,13 @@ public class TransactionController {
     private final TransactionService transactionService;
     private final BeneficiaryService beneficiaryService;
     private final AccountService accountService;
-    // private final TransactionReceiptDTO transactionReceiptDTO;
 
     public TransactionController(TransactionService transactionService,
             BeneficiaryService beneficiaryService,
-            AccountService accountService
-
-    // ,TransactionReceiptDTO transactionReceiptDTO
-    ) {
+            AccountService accountService) {
         this.transactionService = transactionService;
         this.beneficiaryService = beneficiaryService;
         this.accountService = accountService;
-        // this.transactionReceiptDTO = transactionReceiptDTO;
     }
 
     @GetMapping

@@ -40,11 +40,4 @@ public class ComplianceController {
         model.addAttribute("frauds", fraudService.getAllFraudLogs());
         return "compliance-fraud"; // Dedicated read-only view
     }
-
-    // 📜 All Transactions (Read-Only View) Not used by view
-    @GetMapping("/transactions")
-    public String viewAllTransactions(Model model) {
-        model.addAttribute("transactions", transactionService.getAllTransactions());
-        return "admin-transactions"; // Reuse existing template
-    }
 }

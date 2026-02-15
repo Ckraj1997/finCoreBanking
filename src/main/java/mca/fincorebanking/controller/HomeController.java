@@ -48,16 +48,6 @@ public class HomeController {
         this.superAdminService = superAdminService;
     }
 
-    // @GetMapping("/")
-    // public String home() {
-    // return "index";
-    // }
-
-    // @GetMapping("/login")
-    // public String login() {
-    // return "login";
-    // }
-
     @GetMapping({ "/dashboard", "/" })
     public String dashboard(HttpServletRequest request, Model model, Authentication auth) {
         String username = auth.getName();
