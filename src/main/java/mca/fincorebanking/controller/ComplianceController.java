@@ -8,7 +8,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import jakarta.servlet.http.HttpServletRequest;
 import mca.fincorebanking.service.AuditService;
 import mca.fincorebanking.service.FraudService;
-import mca.fincorebanking.service.TransactionService;
 
 @Controller
 @RequestMapping("/compliance")
@@ -16,13 +15,10 @@ public class ComplianceController {
 
     private final AuditService auditService;
     private final FraudService fraudService;
-    private final TransactionService transactionService;
 
-    public ComplianceController(AuditService auditService, FraudService fraudService,
-            TransactionService transactionService) {
+    public ComplianceController(AuditService auditService, FraudService fraudService) {
         this.auditService = auditService;
         this.fraudService = fraudService;
-        this.transactionService = transactionService;
     }
 
     // 🛡️ SYSTEM AUDIT LOGS
