@@ -1,0 +1,37 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org">
+    <head th:replace="~{fragments/head :: head}"> </head>
+    <body>
+        <div th:replace="~{fragments/navbar :: navbar}"></div>
+        <div th:replace="~{fragments/sidebar :: sidebar}"></div>
+
+        <div class="main-content">
+            <h4>Pending Account Requests</h4>
+
+            <table class="table table-bordered">
+                <tr>
+                    <th>User</th>
+                    <th>Account Type</th>
+                    <th>Action</th>
+                </tr>
+
+                <tr th:each="acc : ${accounts}">
+                    <td th:text="${acc.user.username}"></td>
+                    <td th:text="${acc.accountType}"></td>
+                    <td>
+                        <form
+                            th:action="@{/admin/accounts/{id}/approve(id=${acc.id})}"
+                            method="post"
+                        >
+                            <button class="btn btn-success btn-sm">
+                                Approve
+                            </button>
+                        </form>
+                    </td>
+                </tr>
+            </table>
+        </div>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+        <script th:src="@{/js/app.js}"></script>
+    </body>
+</html>

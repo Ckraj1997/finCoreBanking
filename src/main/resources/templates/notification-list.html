@@ -1,0 +1,56 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org">
+    <head th:replace="~{fragments/head :: head}">
+        <meta charset="utf-8" />
+    </head>
+    <body>
+        <div th:replace="~{fragments/navbar :: navbar}"></div>
+        <div th:replace="~{fragments/sidebar :: sidebar}"></div>
+        <div class="main-content">
+            <div class="container mt-5" style="max-width: 500px">
+                <!-- Header -->
+                <div
+                    class="d-flex justify-content-between align-items-center mb-3"
+                >
+                    <h4>Notifications</h4>
+                </div>
+
+                <!-- Empty State -->
+                <div
+                    th:if="${notifications.isEmpty()}"
+                    class="alert alert-info"
+                >
+                    You have no notifications.
+                </div>
+
+                <!-- Notification List -->
+                <div class="card shadow-sm" th:if="${!notifications.isEmpty()}">
+                    <div class="list-group list-group-flush">
+                        <div
+                            class="list-group-item"
+                            th:each="n : ${notifications}"
+                        >
+                            <div class="d-flex justify-content-between">
+                                <div>
+                                    <i
+                                        class="bi bi-bell-fill text-primary me-2"
+                                    ></i>
+                                    <strong th:text="${n.message}"></strong>
+                                </div>
+
+                                <small
+                                    class="text-muted"
+                                    th:text="${#temporals.format(n.createdAt, 'dd MMM yyyy, HH:mm')}"
+                                >
+                                </small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+        <script th:src="@{/js/app.js}"></script>
+    </body>
+</html>

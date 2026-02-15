@@ -1,0 +1,123 @@
+:root {
+    --navbar-height: 56px;
+    --sidebar-width: 240px;
+    --primary-dark: #1f2937;
+    --primary-hover: #2563eb;
+}
+
+/* RESET */
+body {
+    margin: 0;
+    background-color: #f8fafc;
+    font-family: "Segoe UI", sans-serif;
+}
+
+/* SIDEBAR */
+.sidebar {
+    position: fixed;
+    top: var(--navbar-height);
+    left: 0;
+    width: var(--sidebar-width);
+    height: calc(100vh - var(--navbar-height));
+    background-color: var(--primary-dark);
+    padding-top: 10px;
+}
+
+.sidebar a {
+    display: block;
+    padding: 10px 20px;
+    color: #e5e7eb;
+    text-decoration: none;
+    font-size: 14px;
+}
+
+.sidebar a:hover {
+    background-color: var(--primary-hover);
+}
+
+.sidebar a.active {
+    background-color: #2563eb;
+    font-weight: 600;
+}
+
+
+.sidebar-section {
+    padding: 12px 20px;
+    font-size: 11px;
+    color: #facc15;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    border-top: 1px solid rgba(255,255,255,0.08);
+    margin-top: 12px;
+}
+
+
+/* COLLAPSED SIDEBAR */
+.sidebar-collapsed .sidebar {
+    width: 70px;
+}
+
+.sidebar-collapsed .main-content {
+    margin-left: 70px;
+}
+
+.sidebar-collapsed .sidebar a {
+    text-align: center;
+    padding: 12px 0;
+}
+
+.sidebar-collapsed .sidebar a span,
+.sidebar-collapsed .sidebar-section {
+    display: none;
+}
+
+
+/* MAIN CONTENT */
+.main-content {
+    margin-left: var(--sidebar-width);
+    margin-top: var(--navbar-height);
+    padding: 25px;
+}
+
+/* CARDS */
+.card {
+    border-radius: 12px;
+}
+
+.card:hover {
+    transform: translateY(-4px);
+    transition: 0.3s;
+    cursor: pointer;
+}
+
+
+.dashboard-card {
+    border-left: 5px solid #2563eb;
+    transition: transform 0.2s ease;
+}
+
+.dashboard-card:hover {
+    transform: translateY(-5px);
+}
+
+.dashboard-card h6 {
+    color: #6b7280;
+    font-size: 14px;
+}
+
+.dashboard-card h3 {
+    font-weight: bold;
+    color: #111827;
+}
+
+.dashboard-card.admin {
+    border-left-color: #dc2626;
+}
+
+.table-hover tbody tr:hover {
+    background-color: #f1f5f9;
+}
+
+.badge {
+    font-size: 12px;
+}

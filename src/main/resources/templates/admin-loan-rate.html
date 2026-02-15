@@ -1,0 +1,123 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/head :: head}"></head>
+<body>
+    <div th:replace="~{fragments/navbar :: navbar}"></div>
+    <div th:replace="~{fragments/sidebar :: sidebar}"></div>
+
+    <div class="main-content">
+        <h2 class="mb-4 text-primary"><i class="bi bi-sliders me-2"></i> Loan Configuration</h2>
+
+        <div th:if="${success}" class="alert alert-success alert-dismissible fade show">
+            <i class="bi bi-check-circle-fill me-2"></i> <span th:text="${success}"></span>
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+        <div th:if="${error}" class="alert alert-danger alert-dismissible fade show">
+            <i class="bi bi-exclamation-triangle-fill me-2"></i> <span th:text="${error}"></span>
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+
+        <div class="card shadow-sm mb-4">
+            <div class="card-header bg-light fw-bold">Add New Loan Product</div>
+            <div class="card-body">
+                <form th:action="@{/admin/loan-types/add}" method="post" class="row g-3">
+                    <div class="col-md-6">
+                        <input type="text" name="loanType" class="form-control" placeholder="Loan Name (e.g. HOME_LOAN)" required>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="input-group">
+                            <input type="number" name="rate" step="0.01" class="form-control" placeholder="Interest Rate" required>
+                            <span class="input-group-text">%</span>
+                        </div>
+                    </div>
+                    <div class="col-md-2">
+                        <button type="submit" class="btn btn-success w-100"><i class="bi bi-plus-lg"></i> Add</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <div class="card shadow-sm">
+            <div class="card-body p-0">
+                <table class="table table-hover align-middle mb-0">
+                    <thead class="table-dark">
+                        <tr>
+                            <th>Type</th>
+                            <th>Interest Rate</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="type : ${loanTypes}">
+                            <td class="fw-bold" th:text="${type.loanType}">PERSONAL</td>
+                            <td class="text-primary fw-bold">
+                                <span th:text="${type.interestRate}">10.5</span>%
+                            </td>
+                            <td>
+                                <span class="badge" 
+                                      th:classappend="${type.active} ? 'bg-success' : 'bg-secondary'"
+                                      th:text="${type.active} ? 'ACTIVE' : 'INACTIVE'">
+                                </span>
+                            </td>
+                            <td>
+                                <button class="btn btn-sm btn-outline-primary" 
+                                        data-bs-toggle="modal" 
+                                        th:data-bs-target="'#editModal-' + ${type.id}">
+                                    <i class="bi bi-pencil"></i> Edit
+                                </button>
+
+                                <form th:action="@{/admin/loan-types/delete}" method="post" style="display:inline;">
+                                    <input type="hidden" name="id" th:value="${type.id}">
+                                    <button type="submit" class="btn btn-sm btn-outline-danger" 
+                                            onclick="return confirm('Delete this loan type?')">
+                                        <i class="bi bi-trash"></i>
+                                    </button>
+                                </form>
+
+                                <div class="modal fade" th:id="'editModal-' + ${type.id}" tabindex="-1">
+                                    <div class="modal-dialog">
+                                        <div class="modal-content">
+                                            <form th:action="@{/admin/loan-types/update}" method="post">
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title">Edit Loan Rate</h5>
+                                                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                                </div>
+                                                <div class="modal-body">
+                                                    <input type="hidden" name="id" th:value="${type.id}">
+                                                    
+                                                    <div class="mb-3">
+                                                        <label class="form-label">Loan Type</label>
+                                                        <input type="text" class="form-control" th:value="${type.loanType}" disabled>
+                                                    </div>
+                                                    
+                                                    <div class="mb-3">
+                                                        <label class="form-label">New Interest Rate (%)</label>
+                                                        <input type="number" step="0.01" name="rate" class="form-control" th:value="${type.interestRate}" required>
+                                                    </div>
+
+                                                    <div class="form-check form-switch">
+                                                        <input class="form-check-input" type="checkbox" name="active" value="true" th:checked="${type.active}">
+                                                        <label class="form-check-label">Active</label>
+                                                    </div>
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                                    <button type="submit" class="btn btn-primary">Save Changes</button>
+                                                </div>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                                </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script th:src="@{/js/app.js}"></script>
+</body>
+</html>

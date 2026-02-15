@@ -1,0 +1,16 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org">
+   <head th:replace="~{fragments/head :: head}"></head>
+  <body>
+   
+  <div th:replace="~{fragments/navbar :: navbar}"></div>
+        <div th:replace="~{fragments/sidebar :: sidebar}"></div>
+
+        <div class="main-content">
+
+    Core Banking management System
+  </div>
+           <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+        <script th:src="@{/js/app.js}" ></script>
+  </body>
+</html>

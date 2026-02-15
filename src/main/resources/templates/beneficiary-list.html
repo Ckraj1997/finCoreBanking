@@ -1,0 +1,65 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org">
+    <head th:replace="~{fragments/head :: head}"></head>
+    <body>
+        <div th:replace="~{fragments/navbar :: navbar}"></div>
+        <div th:replace="~{fragments/sidebar :: sidebar}"></div>
+
+        <div class="main-content">
+            <div class="container mt-4">
+                <div
+                    class="d-flex justify-content-between align-items-center mb-4"
+                >
+                    <h4>My Beneficiaries</h4>
+                    <a th:href="@{/beneficiaries/add}" class="btn btn-primary">
+                        + Add Beneficiary
+                    </a>
+                </div>
+
+                <div
+                    th:if="${beneficiaries.isEmpty()}"
+                    class="alert alert-info"
+                >
+                    No beneficiaries added yet.
+                </div>
+
+                <table
+                    th:if="${!beneficiaries.isEmpty()}"
+                    class="table table-bordered table-striped"
+                >
+                    <thead class="table-light">
+                        <tr>
+                            <th>Name</th>
+                            <th>Account Number</th>
+                            <th>Bank</th>
+                            <th>IFSC</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        <tr th:each="b : ${beneficiaries}">
+                            <td th:text="${b.beneficiaryName}"></td>
+                            <td th:text="${b.beneficiaryAccountNumber}"></td>
+                            <td th:text="${b.bankName}"></td>
+                            <td>Not Implemented Yet</td>
+                           <!--<td th:text="${b.ifsc}"></td> --> 
+                            <td>
+                                <span
+                                    th:text="${b.status}"
+                                    th:classappend="
+                            ${b.status=='APPROVED'} ? 'badge bg-success' :
+                            (${b.status=='PENDING'} ? 'badge bg-warning' :
+                            'badge bg-danger')"
+                                >
+                                </span>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+        <script th:src="@{/js/app.js}"></script>
+    </body>
+</html>

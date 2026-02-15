@@ -1,0 +1,102 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/head :: head}"></head>
+
+<body>
+    <div th:replace="~{fragments/navbar :: navbar}"></div>
+    <div th:replace="~{fragments/sidebar :: sidebar}"></div>
+
+    <div class="main-content">
+        <h2 class="mb-4">Pending KYC Approvals</h2>
+
+        <div th:if="${success}" class="alert alert-success alert-dismissible fade show">
+            <i class="bi bi-check-circle me-2"></i> <span th:text="${success}"></span>
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+        <div th:if="${error}" class="alert alert-danger alert-dismissible fade show">
+            <i class="bi bi-x-circle me-2"></i> <span th:text="${error}"></span>
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+
+        <div class="card shadow-sm">
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle">
+                        <thead class="table-dark">
+                            <tr>
+                                <th>User</th>
+                                <th>Doc Type</th>
+                                <th>Doc Number</th>
+                                <th>Uploaded On</th>
+                                <th>Document</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="kyc : ${kycList}">
+                                <td>
+                                    <div class="d-flex align-items-center">
+                                        <div class="bg-light rounded-circle p-2 me-2">
+                                            <i class="bi bi-person text-primary"></i>
+                                        </div>
+                                        <div>
+                                            <span class="fw-bold d-block" th:text="${kyc.user.username}">User</span>
+                                            <small class="text-muted" th:text="${kyc.user.email}">email@test.com</small>
+                                        </div>
+                                    </div>
+                                </td>
+
+                                <td>
+                                    <span class="badge bg-info text-dark" th:text="${kyc.documentType}">AADHAR</span>
+                                </td>
+
+                                <td class="fw-bold text-secondary" th:text="${kyc.documentNumber}">12345</td>
+
+                                <td th:text="${#temporals.format(kyc.uploadDate, 'dd-MMM-yyyy HH:mm')}">Date</td>
+
+                                <td>
+                                    <a th:href="@{'/uploads/kyc-documents/' + ${kyc.fileName}}" 
+                                       target="_blank" 
+                                       class="btn btn-sm btn-outline-primary">
+                                        <i class="bi bi-eye"></i> View
+                                    </a>
+                                </td>
+
+                                <td>
+                                    <div class="d-flex gap-2">
+                                        <form th:action="@{/admin/kyc/approve}" method="post">
+                                            <input type="hidden" name="id" th:value="${kyc.id}" />
+                                            <button type="submit" class="btn btn-sm btn-success" 
+                                                    onclick="return confirm('Approve this KYC?')">
+                                                <i class="bi bi-check-lg"></i> Approve
+                                            </button>
+                                        </form>
+
+                                        <form th:action="@{/admin/kyc/reject}" method="post">
+                                            <input type="hidden" name="id" th:value="${kyc.id}" />
+                                            <button type="submit" class="btn btn-sm btn-danger"
+                                                    onclick="return confirm('Reject this KYC?')">
+                                                <i class="bi bi-x-lg"></i> Reject
+                                            </button>
+                                        </form>
+                                    </div>
+                                </td>
+                            </tr>
+
+                            <tr th:if="${#lists.isEmpty(kycList)}">
+                                <td colspan="6" class="text-center py-5 text-muted">
+                                    <i class="bi bi-folder-check fs-1 d-block mb-3"></i>
+                                    No pending KYC requests found. Good job!
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script th:src="@{/js/app.js}"></script>
+</body>
+</html>

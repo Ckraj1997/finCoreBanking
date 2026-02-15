@@ -1,0 +1,36 @@
+<!doctype html>
+<html
+    xmlns:th="http://www.thymeleaf.org"
+    xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+>
+    <body>
+        <nav
+            class="navbar navbar-dark bg-primary px-4"
+            th:fragment="navbar"
+            style="height: 56px"
+        >
+            <!-- LEFT -->
+            <span class="navbar-brand fw-bold d-flex align-items-center">
+                <button
+                    class="btn btn-sm btn-outline-light me-3"
+                    onclick="toggleSidebar()"
+                >
+                    <i class="bi bi-list"></i>
+                </button>
+                CBMS
+            </span>
+
+            <span class="navbar-brand fw-bold"> CBMS </span>
+
+            <!-- RIGHT -->
+            <div class="d-flex align-items-center text-white">
+                <i class="bi bi-person-circle me-2"></i>
+                <span sec:authentication="name"></span>
+
+                <a th:href="@{/logout}" class="btn btn-sm btn-light ms-3">
+                    Logout
+                </a>
+            </div>
+        </nav>
+    </body>
+</html>
