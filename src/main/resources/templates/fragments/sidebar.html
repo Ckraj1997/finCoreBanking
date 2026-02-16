@@ -14,14 +14,12 @@
 
             <div sec:authorize="hasAnyRole('ROLE_CUSTOMER', 'ROLE_CORPORATE')">
                 <div class="sidebar-section">Banking</div>
-
                 <a
                     th:href="@{/accounts}"
                     th:classappend="${currentUri != null and currentUri.startsWith('/accounts')} ? 'active'"
                 >
                     <i class="bi bi-wallet2 me-2"></i> <span>Accounts</span>
                 </a>
-
                 <a
                     th:href="@{/transactions}"
                     th:classappend="${currentUri == '/transactions'} ? 'active'"
@@ -29,21 +27,18 @@
                     <i class="bi bi-arrow-left-right me-2"></i>
                     <span>Transactions</span>
                 </a>
-
                 <a
                     th:href="@{/transactions/transfer}"
                     th:classappend="${currentUri != null and currentUri.startsWith('/transactions/transfer')} ? 'active'"
                 >
                     <i class="bi bi-send me-2"></i> <span>Fund Transfer</span>
                 </a>
-
                 <a
                     th:href="@{/beneficiaries}"
                     th:classappend="${currentUri != null and currentUri.startsWith('/beneficiaries')} ? 'active'"
                 >
                     <i class="bi bi-people me-2"></i> <span>Beneficiaries</span>
                 </a>
-
                 <a
                     th:href="@{/investments}"
                     th:classappend="${currentUri != null and currentUri.startsWith('/investments')} ? 'active'"
@@ -51,16 +46,13 @@
                     <i class="bi bi-graph-up-arrow me-2"></i>
                     <span>Investments</span>
                 </a>
-
                 <a
                     th:href="@{/loans}"
                     th:classappend="${currentUri != null and currentUri.startsWith('/loans')} ? 'active'"
                 >
                     <i class="bi bi-cash-coin me-2"></i> <span>Loans</span>
                 </a>
-
                 <div class="sidebar-section">Services</div>
-
                 <a
                     th:href="@{/kyc}"
                     th:classappend="${currentUri != null and currentUri.startsWith('/kyc')} ? 'active'"
@@ -68,7 +60,6 @@
                     <i class="bi bi-person-badge me-2"></i>
                     <span>KYC Update</span>
                 </a>
-
                 <a
                     th:href="@{/services}"
                     th:classappend="${currentUri != null and currentUri.startsWith('/services')} ? 'active'"
@@ -76,7 +67,6 @@
                     <i class="bi bi-credit-card-2-front me-2"></i>
                     <span>Cards & Cheques</span>
                 </a>
-
                 <a
                     th:href="@{/reports/statement}"
                     th:classappend="${currentUri != null and currentUri.startsWith('/reports')} ? 'active'"
@@ -84,25 +74,16 @@
                     <i class="bi bi-file-earmark-text me-2"></i>
                     <span>Statements</span>
                 </a>
-
-                <a
-                    th:href="@{/notifications}"
-                    th:classappend="${currentUri != null and currentUri.startsWith('/notifications')} ? 'active'"
-                >
-                    <i class="bi bi-bell me-2"></i> <span>Notifications</span>
-                </a>
             </div>
 
             <div sec:authorize="hasRole('ROLE_TELLER')">
                 <div class="sidebar-section">Counter Operations</div>
-
                 <a
                     th:href="@{/teller}"
                     th:classappend="${currentUri != null and currentUri.startsWith('/teller')} ? 'active'"
                 >
                     <i class="bi bi-bank2 me-2"></i> <span>Cash Counter</span>
                 </a>
-
                 <a
                     th:href="@{/teller/history}"
                     th:classappend="${currentUri != null and currentUri.startsWith('/teller/history')} ? 'active'"
@@ -113,16 +94,46 @@
             </div>
 
             <div sec:authorize="hasRole('ROLE_MANAGER')">
-                <div class="sidebar-section">Branch Management</div>
-
+                <div class="sidebar-section">Approvals</div>
                 <a
                     th:href="@{/manager/approvals}"
                     th:classappend="${currentUri != null and currentUri.startsWith('/manager/approvals')} ? 'active'"
                 >
                     <i class="bi bi-check2-circle me-2"></i>
-                    <span>Pending Approvals</span>
+                    <span>Pending Requests</span>
                 </a>
 
+                <a th:href="@{/manager/customers/create}" 
+                   th:classappend="${currentUri == '/manager/customers/create'} ? 'active'">
+                    <i class="bi bi-person-plus-fill me-2"></i> <span>Onboard Customer</span>
+                </a>
+
+                <a th:href="@{/manager/users}" th:classappend="${currentUri != null and currentUri.startsWith('/manager/users')} ? 'active'">
+                    <i class="bi bi-people-fill me-2"></i> <span>Customer Search</span>
+                </a>
+                <a
+                    th:href="@{/manager/accounts}"
+                    th:classappend="${currentUri != null and currentUri.startsWith('/manager/accounts')} ? 'active'"
+                >
+                    <i class="bi bi-wallet2 me-2"></i>
+                    <span>Approve Accounts</span>
+                </a>
+                <a
+                    th:href="@{/manager/loans}"
+                    th:classappend="${currentUri != null and currentUri.startsWith('/manager/loans')} ? 'active'"
+                >
+                    <i class="bi bi-cash-coin me-2"></i>
+                    <span>Disburse Loans</span>
+                </a>
+                <a
+                    th:href="@{/manager/kyc}"
+                    th:classappend="${currentUri != null and currentUri.startsWith('/manager/kyc')} ? 'active'"
+                >
+                    <i class="bi bi-person-badge me-2"></i>
+                    <span>Verify KYC</span>
+                </a>
+
+                <div class="sidebar-section">Branch Management</div>
                 <a
                     th:href="@{/manager/users}"
                     th:classappend="${currentUri != null and currentUri.startsWith('/manager/users')} ? 'active'"
@@ -130,7 +141,6 @@
                     <i class="bi bi-people-fill me-2"></i>
                     <span>Customer Search</span>
                 </a>
-
                 <a
                     th:href="@{/manager/reports}"
                     th:classappend="${currentUri != null and currentUri.startsWith('/manager/reports')} ? 'active'"
@@ -141,91 +151,47 @@
             </div>
 
             <div sec:authorize="hasRole('ROLE_ADMIN')">
-                <div class="sidebar-section">Administration</div>
-
+                <div class="sidebar-section">User Administration</div>
                 <a
                     th:href="@{/admin/users}"
                     th:classappend="${currentUri != null and currentUri.startsWith('/admin/users')} ? 'active'"
                 >
                     <i class="bi bi-people-fill me-2"></i>
-                    <span>User Management</span>
+                    <span>Manage Users</span>
                 </a>
-
                 <a
                     th:href="@{/admin/register}"
                     th:classappend="${currentUri != null and currentUri.startsWith('/admin/register')} ? 'active'"
                 >
                     <i class="bi bi-person-plus me-2"></i>
-                    <span>Register User</span>
+                    <span>Onboard Staff</span>
                 </a>
 
-                <div class="sidebar-section">Approvals</div>
-
+                <div class="sidebar-section">System Config</div>
                 <a
-                    th:href="@{/admin/kyc}"
-                    th:classappend="${currentUri != null and currentUri.startsWith('/admin/kyc')} ? 'active'"
+                    th:href="@{/admin/loan-types}"
+                    th:classappend="${currentUri != null and currentUri.startsWith('/admin/loan-types')} ? 'active'"
                 >
-                    <i class="bi bi-file-earmark-person me-2"></i>
-                    <span>KYC Docs</span>
+                    <i class="bi bi-percent me-2"></i>
+                    <span>Loan Interest Rates</span>
                 </a>
-
-                <a
-                    th:href="@{/admin/accounts}"
-                    th:classappend="${currentUri != null and currentUri.startsWith('/admin/accounts')} ? 'active'"
-                >
-                    <i class="bi bi-cash-stack me-2"></i> <span>Accounts</span>
-                </a>
-
-                 <a
-                    th:href="@{/admin/loans}"
-                    th:classappend="${currentUri != null and currentUri.startsWith('/admin/loans')} ? 'active'"
-                >
-                    <i class="bi bi-cash-stack me-2"></i> <span>Loans</span>
-                </a>
-
-                <a
-                    th:href="@{/admin/services}"
-                    th:classappend="${currentUri != null and currentUri.startsWith('/admin/services')} ? 'active'"
-                >
-                    <i class="bi bi-envelope-paper me-2"></i>
-                    <span>Cheque Requests</span>
-                </a>
-                <a
-                    th:href="@{/admin/beneficiaries}"
-                    th:classappend="${currentUri != null and currentUri.startsWith('/admin/beneficiaries')} ? 'active'"
-                >
-                    <i class="bi bi-check2-square me-2"></i>
-                    <span>Beneficiaries</span>
-                </a>
-
-                <!-- <div class="sidebar-section">Security</div> -->
-
-                <!-- <a
-                    th:href="@{/admin/audit}"
-                    th:classappend="${currentUri != null and currentUri.startsWith('/admin/audit')} ? 'active'"
-                >
-                    <i class="bi bi-journal-text me-2"></i>
-                    <span>Audit Logs</span>
-                </a> -->
-
-                <!-- <a
-                    th:href="@{/admin/fraud}"
-                    th:classappend="${currentUri != null and currentUri.startsWith('/admin/fraud')} ? 'active'"
-                >
-                    <i class="bi bi-shield-exclamation me-2"></i>
-                    <span>Fraud Alerts</span>
-                </a> -->
             </div>
 
             <div sec:authorize="hasAnyRole('ROLE_COMPLIANCE', 'ROLE_AUDITOR')">
-                <div class="sidebar-section">Compliance</div>
-
-                <a th:href="@{/compliance/audit}" th:classappend="${currentUri != null and currentUri.startsWith('/compliance/audit')} ? 'active'">
-                    <i class="bi bi-eye me-2"></i> <span>System Logs</span>
+                <div class="sidebar-section">Oversight</div>
+                <a
+                    th:href="@{/compliance/audit/logs}"
+                    th:classappend="${currentUri != null and currentUri.contains('/audit')}"
+                >
+                    <i class="bi bi-journal-text me-2"></i>
+                    <span>System Audit Logs</span>
                 </a>
-
-                <a th:href="@{/reports/audit}" th:classappend="${currentUri != null and currentUri.startsWith('/reports/audit')} ? 'active'">
-                    <i class="bi bi-file-earmark-pdf me-2"></i> <span>Compliance Reports</span>
+                <a
+                    th:href="@{/compliance/reports/fraud}"
+                    th:classappend="${currentUri != null and currentUri.contains('/fraud')}"
+                >
+                    <i class="bi bi-shield-exclamation me-2"></i>
+                    <span>Fraud & Enforcement</span>
                 </a>
             </div>
 

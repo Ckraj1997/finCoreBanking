@@ -13,9 +13,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import jakarta.servlet.http.HttpServletRequest;
 import mca.fincorebanking.entity.Role;
 import mca.fincorebanking.entity.User;
-import mca.fincorebanking.service.AccountService;
 import mca.fincorebanking.service.LoanInterestRateService;
-import mca.fincorebanking.service.LoanService;
 import mca.fincorebanking.service.UserService;
 
 @Controller
@@ -23,34 +21,12 @@ import mca.fincorebanking.service.UserService;
 public class AdminController {
 
     private final UserService userService;
-    private final AccountService accountService;
-    private final LoanService loanService;
     private final LoanInterestRateService loanInterestRateService;
 
-    public AdminController(UserService userService, AccountService accountService, LoanService loanService,
+    public AdminController(UserService userService,
             LoanInterestRateService loanInterestRateService) {
         this.userService = userService;
-        this.accountService = accountService;
-        this.loanService = loanService;
         this.loanInterestRateService = loanInterestRateService;
-    }
-
-    // --- ACCOUNT FINAL APPROVAL ---
-    @GetMapping("/accounts")
-    public String finalAccountApprovals(Model model, HttpServletRequest request) {
-        // Admin sees "PENDING_ADMIN" (Forwarded by Manager)
-        // Ensure you add getAccountsByStatus() to your Service
-        model.addAttribute("accounts", accountService.getAccountsByStatus("PENDING_ADMIN"));
-        model.addAttribute("currentUri", request.getRequestURI());
-        return "admin-account-approval";
-    }
-
-    @PostMapping("/accounts/{id}/approve")
-    public String finalApproveAccount(@PathVariable Long id, RedirectAttributes redirect) {
-        // Final Approval -> ACTIVE
-        accountService.approveAccount(id); // Sets to ACTIVE
-        redirect.addFlashAttribute("success", "Account Finalized and Activated.");
-        return "redirect:/admin/accounts";
     }
 
     @GetMapping("/users")
@@ -100,23 +76,6 @@ public class AdminController {
             return "redirect:/admin/register";
         }
         return "redirect:/admin/users";
-    }
-
-    // --- LOAN FINAL APPROVAL ---
-    @GetMapping("/loans")
-    public String finalLoanApprovals(Model model, HttpServletRequest request) {
-        // Admin sees "PENDING_ADMIN"
-        model.addAttribute("loans", loanService.getLoansByStatus("PENDING_ADMIN"));
-        model.addAttribute("currentUri", request.getRequestURI());
-        return "admin-loan-list";
-    }
-
-    @PostMapping("/loans/{id}/approve")
-    public String finalApproveLoan(@PathVariable Long id, RedirectAttributes redirect) {
-        // Final Approval -> APPROVED
-        loanService.approveLoan(id);
-        redirect.addFlashAttribute("success", "Loan Finalized and Disbursed.");
-        return "redirect:/admin/loans";
     }
 
     @GetMapping("/loan-types")

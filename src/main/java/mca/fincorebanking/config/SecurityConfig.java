@@ -40,24 +40,23 @@ public class SecurityConfig {
                                                 // 🏦 Branch Operations (Teller)
                                                 .requestMatchers("/teller/**").hasRole("TELLER")
 
-                                                // 👔 Management (Branch Manager)
+                                                // 👔 Manager (Business Ops - Final Approval Authority)
                                                 .requestMatchers("/manager/**").hasRole("MANAGER")
 
-                                                // 🛡️ Compliance & Audit
-                                                .requestMatchers("/audit/**", "/fraud/logs", "/reports/audit/**",
-                                                                "/compliance/**")
+                                                // 🛡️ Compliance (Enforcement - Write Access)
+                                                .requestMatchers("/compliance/actions/**").hasRole("COMPLIANCE")
+
+                                                // 📜 Audit (Read Only - Auditors & Compliance)
+                                                .requestMatchers("/compliance/audit/**", "/compliance/reports/**",
+                                                                "/reports/**")
                                                 .hasAnyRole("COMPLIANCE", "AUDITOR")
 
-                                                // 🤝 Relationship Management
-                                                .requestMatchers("/crm/**").hasRole("RELATIONSHIP_MGR")
-
-                                                // 🔧 System Admin
+                                                // 🔧 System Admin (Config & User Mgmt ONLY - No Business Ops)
                                                 .requestMatchers("/admin/**").hasRole("ADMIN")
 
                                                 // ⚡ Super Admin
-                                                .requestMatchers("/super-admin/**").hasRole("SUPER_ADMIN")
-
-                                                .anyRequest().authenticated())
+                                                .requestMatchers("/super-admin/**").hasRole("SUPER_ADMIN").anyRequest()
+                                                .authenticated())
                                 .formLogin(form -> form
                                                 .loginPage("/login")
                                                 .successHandler(customAuthenticationSuccessHandler)
