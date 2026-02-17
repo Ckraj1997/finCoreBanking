@@ -15,7 +15,6 @@ import jakarta.servlet.http.HttpServletRequest;
 import mca.fincorebanking.entity.Role;
 import mca.fincorebanking.entity.User;
 import mca.fincorebanking.service.AccountService;
-import mca.fincorebanking.service.AuditService;
 import mca.fincorebanking.service.BeneficiaryService;
 import mca.fincorebanking.service.CardService;
 import mca.fincorebanking.service.KycService;
@@ -32,18 +31,15 @@ public class ManagerController {
     private final CardService cardService;
     private final BeneficiaryService beneficiaryService;
     private final UserService userService;
-    private final AuditService auditService;
 
     public ManagerController(AccountService accountService, LoanService loanService, KycService kycService,
-            CardService cardService, BeneficiaryService beneficiaryService, UserService userService,
-            AuditService auditService) {
+            CardService cardService, BeneficiaryService beneficiaryService, UserService userService) {
         this.accountService = accountService;
         this.loanService = loanService;
         this.kycService = kycService;
         this.cardService = cardService;
         this.beneficiaryService = beneficiaryService;
         this.userService = userService;
-        this.auditService = auditService;
     }
 
     // --- DASHBOARD HUB ---
@@ -85,7 +81,6 @@ public class ManagerController {
     public String approveAccount(@PathVariable Long id, RedirectAttributes redirect) {
         // ENHANCEMENT: Manager directly activates the account
         accountService.approveAccount(id); // Assumes this sets status to 'ACTIVE'
-        auditService.log("MANAGER", "Approved Account ID: " + id);
         redirect.addFlashAttribute("success", "Account Activated Successfully.");
         return "redirect:/manager/accounts";
     }
@@ -102,7 +97,6 @@ public class ManagerController {
     public String approveLoan(@PathVariable Long id, RedirectAttributes redirect) {
         // ENHANCEMENT: Manager directly disburses the loan
         loanService.approveLoan(id); // Assumes this sets status to 'APPROVED'
-        auditService.log("MANAGER", "Approved Loan ID: " + id);
         redirect.addFlashAttribute("success", "Loan Approved & Disbursed.");
         return "redirect:/manager/loans";
     }
@@ -118,7 +112,6 @@ public class ManagerController {
     @PostMapping("/kyc/approve")
     public String approveKyc(@RequestParam("id") Long id, RedirectAttributes redirect) {
         kycService.updateKycStatus(id, "VERIFIED"); // Final status
-        auditService.log("MANAGER", "Verified KYC ID: " + id);
         redirect.addFlashAttribute("success", "KYC Verified Successfully.");
         return "redirect:/manager/kyc";
     }
@@ -126,7 +119,6 @@ public class ManagerController {
     @PostMapping("/kyc/reject")
     public String rejectKyc(@RequestParam("id") Long id, RedirectAttributes redirect) {
         kycService.updateKycStatus(id, "REJECTED");
-        auditService.log("MANAGER", "Rejected KYC ID: " + id);
         redirect.addFlashAttribute("error", "KYC Rejected.");
         return "redirect:/manager/kyc";
     }
@@ -142,7 +134,6 @@ public class ManagerController {
     @PostMapping("/beneficiaries/{id}/approve")
     public String forwardBeneficiary(@PathVariable Long id, RedirectAttributes redirect) {
         beneficiaryService.updateBeneficiaryStatus(id, "APPROVED");
-        auditService.log("MANAGER", "Verified Beneficiary ID: " + id);
         redirect.addFlashAttribute("success", "Beneficiary Verified Successfully.");
         return "redirect:/manager/beneficiaries";
     }
@@ -150,7 +141,6 @@ public class ManagerController {
     @PostMapping("/beneficiaries/{id}/reject")
     public String rejectBeneficiary(@PathVariable Long id, RedirectAttributes redirect) {
         beneficiaryService.updateBeneficiaryStatus(id, "REJECTED");
-        auditService.log("MANAGER", "Rejected Beneficiary ID: " + id);
         redirect.addFlashAttribute("error", "Beneficiary rejected.");
         return "redirect:/manager/beneficiaries";
     }
@@ -166,7 +156,6 @@ public class ManagerController {
     @PostMapping("/services/approve")
     public String forwardService(@RequestParam Long id, RedirectAttributes redirectAttributes) {
         cardService.updateChequeRequestStatus(id, "APPROVED");
-        auditService.log("MANAGER", "Approved Request ID: " + id);
         redirectAttributes.addFlashAttribute("success", "Request verified and approved.");
         return "redirect:/manager/services";
     }
@@ -174,7 +163,6 @@ public class ManagerController {
     @PostMapping("/services/reject")
     public String rejectService(@RequestParam Long id, RedirectAttributes redirectAttributes) {
         cardService.updateChequeRequestStatus(id, "REJECTED");
-        auditService.log("MANAGER", "Rejected Request ID: " + id);
         redirectAttributes.addFlashAttribute("error", "Request Rejected.");
         return "redirect:/manager/services";
     }
@@ -202,7 +190,7 @@ public class ManagerController {
             user.setRole(Role.CUSTOMER);
             
             userService.saveUser(user);
-            auditService.log("MANAGER", "Onboarded new customer: " + user.getUsername());
+            
             
             redirect.addFlashAttribute("success", "Customer '" + user.getUsername() + "' onboarded successfully. You can now open accounts for them.");
             return "redirect:/manager/users"; // Redirects to search list

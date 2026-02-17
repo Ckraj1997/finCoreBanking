@@ -16,7 +16,6 @@ import mca.fincorebanking.entity.Transaction;
 import mca.fincorebanking.repository.AccountRepository;
 import mca.fincorebanking.repository.BeneficiaryRepository;
 import mca.fincorebanking.repository.TransactionRepository;
-import mca.fincorebanking.service.AuditService;
 import mca.fincorebanking.service.FraudService;
 import mca.fincorebanking.service.NotificationService;
 import mca.fincorebanking.service.TransactionService;
@@ -29,7 +28,6 @@ public class TransactionServiceImpl implements TransactionService {
     private final TransactionRepository transactionRepository;
     private final AccountRepository accountRepository;
     private final NotificationService notificationService;
-    private final AuditService auditService;
     private final FraudService fraudService;
     private static final double LARGE_TRANSFER_LIMIT = 100000;
     // private final TransactionReceiptDTO transactionReceiptDTO;
@@ -38,7 +36,7 @@ public class TransactionServiceImpl implements TransactionService {
             BeneficiaryRepository beneficiaryRepository,
             AccountRepository accountRepository,
             NotificationService notificationService,
-            FraudService fraudService, AuditService auditService
+            FraudService fraudService
 
     // , TransactionReceiptDTO transactionReceiptDTO
     ) {
@@ -47,8 +45,6 @@ public class TransactionServiceImpl implements TransactionService {
         this.notificationService = notificationService;
         this.fraudService = fraudService;
         this.beneficiaryRepository = beneficiaryRepository;
-        this.auditService = auditService;
-        // this.transactionReceiptDTO = transactionReceiptDTO;
     }
 
     @Override
@@ -151,10 +147,7 @@ public class TransactionServiceImpl implements TransactionService {
                 fromAccount.getUser(),
                 "₹" + amount + " transferred successfully");
 
-        auditService.log(
-                username,
-                "Tranferred Rs. " + amount + " from " + fromAccount.getAccountNumber() + " to "
-                        + toAccount.getAccountNumber());
+        
 
         return new TransactionReceiptDTO(debitTx, creditTx);
     }
@@ -248,9 +241,6 @@ public class TransactionServiceImpl implements TransactionService {
                         LocalDateTime.now(),
                         account));
 
-        auditService.log(
-                username,
-                type + " of ₹" + amount + " on account " + account.getAccountNumber());
     }
 
     @Override

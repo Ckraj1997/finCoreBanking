@@ -8,7 +8,6 @@ import mca.fincorebanking.entity.Beneficiary;
 import mca.fincorebanking.entity.User;
 import mca.fincorebanking.repository.BeneficiaryRepository;
 import mca.fincorebanking.repository.UserRepository;
-import mca.fincorebanking.service.AuditService;
 import mca.fincorebanking.service.BeneficiaryService;
 import mca.fincorebanking.service.NotificationService;
 
@@ -17,13 +16,10 @@ public class BeneficiaryServiceImpl implements BeneficiaryService {
 
     private final BeneficiaryRepository beneficiaryRepository;
     private final UserRepository userRepository;
-    private final AuditService auditService;
     private final NotificationService notificationService;
 
-    public BeneficiaryServiceImpl(AuditService auditService,
-            UserRepository userRepository, NotificationService notificationService, BeneficiaryRepository beneficiaryRepository) {
+    public BeneficiaryServiceImpl(UserRepository userRepository, NotificationService notificationService, BeneficiaryRepository beneficiaryRepository) {
         this.beneficiaryRepository = beneficiaryRepository;
-        this.auditService = auditService;
         this.notificationService = notificationService;
          this.userRepository = userRepository;
     }
@@ -50,7 +46,7 @@ public class BeneficiaryServiceImpl implements BeneficiaryService {
         b.setStatus("APPROVED");
         beneficiaryRepository.save(b);
 
-        auditService.log("ADMIN", "Approved beneficiary: " + b.getBeneficiaryName());
+        
         notificationService.notify(
                 b.getUser(),
                 "Your beneficiary " + b.getBeneficiaryName() + " has been approved");
@@ -62,7 +58,7 @@ public class BeneficiaryServiceImpl implements BeneficiaryService {
         b.setStatus("REJECTED");
         beneficiaryRepository.save(b);
 
-        auditService.log("ADMIN", "Rejected beneficiary: " + b.getBeneficiaryName());
+        
         notificationService.notify(
                 b.getUser(),
                 "Your beneficiary " + b.getBeneficiaryName() + " has been rejected");
@@ -80,10 +76,7 @@ public class BeneficiaryServiceImpl implements BeneficiaryService {
 
         beneficiaryRepository.save(beneficiary);
 
-        auditService.log(
-                username,
-                "Added beneficiary: " + beneficiary.getBeneficiaryName()
-        );
+      
     }
    @Override
     public List<Beneficiary> getBeneficiaries(String username) {
@@ -107,10 +100,7 @@ public class BeneficiaryServiceImpl implements BeneficiaryService {
         b.setStatus(status);
         beneficiaryRepository.save(b);
 
-        // auditService.log("ADMIN", "Approved beneficiary: " + b.getBeneficiaryName());
-        // notificationService.notify(
-        //         b.getUser(),
-        //         "Your beneficiary " + b.getBeneficiaryName() + " has been approved");
+      
     }
 
 }

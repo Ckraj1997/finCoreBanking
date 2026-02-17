@@ -8,7 +8,6 @@ import org.springframework.stereotype.Service;
 import mca.fincorebanking.entity.Role;
 import mca.fincorebanking.entity.User;
 import mca.fincorebanking.repository.UserRepository;
-import mca.fincorebanking.service.AuditService;
 import mca.fincorebanking.service.NotificationService;
 import mca.fincorebanking.service.UserService;
 
@@ -17,15 +16,13 @@ public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
     private final BCryptPasswordEncoder passwordEncoder;
-    private final AuditService auditService;
     private final NotificationService notificationService;
 
-    public UserServiceImpl(AuditService auditService,
+    public UserServiceImpl(
             NotificationService notificationService, UserRepository userRepository,
             BCryptPasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
-        this.auditService = auditService;
         this.notificationService = notificationService;
     }
 
@@ -33,7 +30,7 @@ public class UserServiceImpl implements UserService {
     public void saveUser(User user) {
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         userRepository.save(user);
-        auditService.log("ADMIN", "Registered new user: " + user.getUsername());
+       
     }
 
     @Override
@@ -58,7 +55,7 @@ public class UserServiceImpl implements UserService {
         user.setActive(false);
         userRepository.save(user);
 
-        auditService.log("ADMIN", "Blocked user: " + user.getUsername());
+        
         notificationService.notify(user, "Your account has been blocked by admin");
     }
 
@@ -68,7 +65,7 @@ public class UserServiceImpl implements UserService {
         user.setActive(true);
         userRepository.save(user);
 
-        auditService.log("ADMIN", "Unblocked user: " + user.getUsername());
+        
         notificationService.notify(user, "Your account has been unblocked by admin");
     }
 

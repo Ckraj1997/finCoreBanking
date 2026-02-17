@@ -47,7 +47,7 @@ public class ComplianceController {
     public String freezeAccount(@RequestParam Long accountId, RedirectAttributes redirect) {
         // You will need to implement this method in AccountService
         accountService.updateAccountStatus(accountId, "FROZEN"); 
-        auditService.log("COMPLIANCE", "Froze Account ID: " + accountId);
+        
         redirect.addFlashAttribute("success", "Account Frozen Successfully.");
         return "redirect:/compliance/reports/fraud";
     }
