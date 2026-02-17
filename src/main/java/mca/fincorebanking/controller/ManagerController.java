@@ -19,6 +19,7 @@ import mca.fincorebanking.service.BeneficiaryService;
 import mca.fincorebanking.service.CardService;
 import mca.fincorebanking.service.KycService;
 import mca.fincorebanking.service.LoanService;
+import mca.fincorebanking.service.PdfService;
 import mca.fincorebanking.service.UserService;
 
 @Controller
@@ -31,15 +32,17 @@ public class ManagerController {
     private final CardService cardService;
     private final BeneficiaryService beneficiaryService;
     private final UserService userService;
+    private final PdfService pdfService;
 
     public ManagerController(AccountService accountService, LoanService loanService, KycService kycService,
-            CardService cardService, BeneficiaryService beneficiaryService, UserService userService) {
+            CardService cardService, BeneficiaryService beneficiaryService, UserService userService, PdfService pdfService) {
         this.accountService = accountService;
         this.loanService = loanService;
         this.kycService = kycService;
         this.cardService = cardService;
         this.beneficiaryService = beneficiaryService;
         this.userService = userService;
+        this.pdfService = pdfService;
     }
 
     // --- DASHBOARD HUB ---
@@ -98,6 +101,14 @@ public class ManagerController {
         // ENHANCEMENT: Manager directly disburses the loan
         loanService.approveLoan(id); // Assumes this sets status to 'APPROVED'
         redirect.addFlashAttribute("success", "Loan Approved & Disbursed.");
+        return "redirect:/manager/loans";
+    }
+
+    @PostMapping("/loans/{id}/reject")
+    public String rejectLoan(@PathVariable Long id, RedirectAttributes redirect) {
+        // ENHANCEMENT: Manager directly disburses the loan
+        loanService.rejectLoan(id); // Assumes this sets status to 'APPROVED'
+        redirect.addFlashAttribute("error", "Loan rejected.");
         return "redirect:/manager/loans";
     }
 
@@ -198,5 +209,29 @@ public class ManagerController {
             redirect.addFlashAttribute("error", "Onboarding Failed: " + e.getMessage());
             return "redirect:/manager/customers/create";
         }
+    }
+
+
+    // 📥 DOWNLOAD LOAN SANCTION LETTER
+    @GetMapping("/loans/{id}/download-sanction")
+    public org.springframework.http.ResponseEntity<org.springframework.core.io.InputStreamResource> downloadSanctionLetter(@PathVariable Long id) {
+        
+        mca.fincorebanking.entity.Loan loan = loanService.findById(id);
+        
+        // Security check: Ensure loan is actually approved
+        if (!"APPROVED".equals(loan.getStatus())) {
+            throw new RuntimeException("Loan is not approved yet.");
+        }
+
+        java.io.ByteArrayInputStream bis = pdfService.generateLoanSanctionLetter(loan);
+
+        org.springframework.http.HttpHeaders headers = new org.springframework.http.HttpHeaders();
+        headers.add("Content-Disposition", "attachment; filename=sanction-letter-" + id + ".pdf");
+
+        return org.springframework.http.ResponseEntity
+                .ok()
+                .headers(headers)
+                .contentType(org.springframework.http.MediaType.APPLICATION_PDF)
+                .body(new org.springframework.core.io.InputStreamResource(bis));
     }
 }

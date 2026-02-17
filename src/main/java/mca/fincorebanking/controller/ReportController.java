@@ -14,6 +14,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import jakarta.servlet.http.HttpServletRequest;
 import mca.fincorebanking.entity.Transaction;
+import mca.fincorebanking.service.AccountService;
+import mca.fincorebanking.service.PdfService;
 import mca.fincorebanking.service.ReportService;
 
 @Controller
@@ -21,9 +23,13 @@ import mca.fincorebanking.service.ReportService;
 public class ReportController {
 
         private final ReportService reportService;
+        private final PdfService pdfService;
+        private final AccountService accountService; // Ensure this is there
 
-        public ReportController(ReportService reportService) {
+        public ReportController(ReportService reportService, PdfService pdfService, AccountService accountService) {
                 this.reportService = reportService;
+                this.pdfService = pdfService;
+                this.accountService = accountService;
         }
 
         @GetMapping("/statement")
@@ -67,5 +73,25 @@ public class ReportController {
                 model.addAttribute("reportType", "Compliance & Audit Trail");
                 model.addAttribute("generatedDate", java.time.LocalDateTime.now());
                 return "report-download-success"; // You'll need this simple view
+        }
+
+        @PostMapping("/statement/download")
+        public org.springframework.http.ResponseEntity<org.springframework.core.io.InputStreamResource> downloadStatement(
+                        @RequestParam String accountNumber) {
+
+                mca.fincorebanking.entity.Account account = accountService.findByAccountNumber(accountNumber);
+                java.util.List<mca.fincorebanking.entity.Transaction> transactions = accountService
+                                .getRecentTransactions(account.getId());
+
+                java.io.ByteArrayInputStream bis = pdfService.generateAccountStatement(account, transactions);
+
+                org.springframework.http.HttpHeaders headers = new org.springframework.http.HttpHeaders();
+                headers.add("Content-Disposition", "attachment; filename=statement-" + accountNumber + ".pdf");
+
+                return org.springframework.http.ResponseEntity
+                                .ok()
+                                .headers(headers)
+                                .contentType(org.springframework.http.MediaType.APPLICATION_PDF)
+                                .body(new org.springframework.core.io.InputStreamResource(bis));
         }
 }

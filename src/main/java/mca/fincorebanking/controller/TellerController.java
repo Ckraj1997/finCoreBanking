@@ -6,6 +6,7 @@ import java.util.List;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -16,7 +17,9 @@ import mca.fincorebanking.entity.Account;
 import mca.fincorebanking.entity.TellerTransaction;
 import mca.fincorebanking.entity.User;
 import mca.fincorebanking.service.AccountService;
+import mca.fincorebanking.service.PdfService;
 import mca.fincorebanking.service.TellerService;
+import mca.fincorebanking.service.TransactionService;
 import mca.fincorebanking.service.UserService;
 
 @Controller
@@ -26,11 +29,15 @@ public class TellerController {
     private final TellerService tellerService;
     private final AccountService accountService;
     private final UserService userService;
+    private final PdfService pdfService;
+    private final TransactionService transactionService;
 
-    public TellerController(TellerService tellerService, AccountService accountService, UserService userService) {
+    public TellerController(TellerService tellerService, AccountService accountService, UserService userService, PdfService pdfService,TransactionService transactionService ) {
         this.tellerService = tellerService;
         this.accountService = accountService;
         this.userService = userService;
+        this.pdfService = pdfService;
+        this.transactionService = transactionService;
     }
 
     // 🏦 Dashboard: Search Customer & View History
@@ -121,5 +128,24 @@ public class TellerController {
             redirectAttributes.addFlashAttribute("error", e.getMessage());
         }
         return "redirect:/teller?searchAccountNo=" + accountNumber;
+    }
+
+    // 📥 DOWNLOAD RECEIPT
+    @GetMapping("/transaction/{id}/receipt")
+    public org.springframework.http.ResponseEntity<org.springframework.core.io.InputStreamResource> downloadReceipt(@PathVariable Long id) {
+        
+        // You might need to add findById to TransactionService if missing
+        mca.fincorebanking.entity.Transaction transaction = transactionService.findById(id); 
+
+        java.io.ByteArrayInputStream bis = pdfService.generateTransactionReceipt(transaction);
+
+        org.springframework.http.HttpHeaders headers = new org.springframework.http.HttpHeaders();
+        headers.add("Content-Disposition", "attachment; filename=receipt-" + id + ".pdf");
+
+        return org.springframework.http.ResponseEntity
+                .ok()
+                .headers(headers)
+                .contentType(org.springframework.http.MediaType.APPLICATION_PDF)
+                .body(new org.springframework.core.io.InputStreamResource(bis));
     }
 }

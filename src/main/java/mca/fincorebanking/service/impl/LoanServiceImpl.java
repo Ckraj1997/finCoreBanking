@@ -82,7 +82,8 @@ public class LoanServiceImpl implements LoanService {
 
     @Override
     public List<Loan> getPendingLoans() {
-        return loanRepository.findByStatus("PENDING");
+        // return loanRepository.findByStatus("PENDING");
+        return loanRepository.findAll();
     }
 
     @Override
