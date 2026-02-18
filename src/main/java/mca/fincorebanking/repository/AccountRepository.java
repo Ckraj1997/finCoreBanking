@@ -33,10 +33,14 @@ public interface AccountRepository extends JpaRepository<Account, Long> {
 
     List<Account> findByStatus(String string);
 
-    @Modifying
+    // ✅ ADD THIS FOR PHASE 4
     @Transactional
-    @Query("UPDATE Account a SET a.status = :status WHERE a.id = :accountId")
-    int updateAccountStatusById(@Param("accountId") Long accountId,
-            @Param("status") String status);
+    @Modifying
+    @Query("UPDATE Account a SET a.status = :status WHERE a.id = :id")
+    int updateAccountStatusById(Long id, String status);
+    
+    // Helper to find user by account for fraud logging
+    @Query("SELECT a.user FROM Account a WHERE a.id = :accountId")
+    Optional<User> findUserByAccountId(Long accountId);
 
 }

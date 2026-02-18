@@ -39,4 +39,7 @@ public interface AccountService {
 
     List<Account> getAccountsByStatus(String pending_admin);
 
+    // ... existing methods ...
+    void freezeAccountByUsername(String username);
+
 }

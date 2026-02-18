@@ -19,11 +19,12 @@ public class FraudServiceImpl implements FraudService {
     }
 
     @Override
-    public void recordFraud(String username, String reason) {
+    public void logFraud(String username, String reason) {
         FraudLog log = new FraudLog();
         log.setUsername(username);
         log.setReason(reason);
         log.setDetectedAt(LocalDateTime.now());
+        // log.setSeverity("HIGH"); // If you have this field
         fraudLogRepository.save(log);
     }
 

@@ -106,7 +106,7 @@ public class TransactionServiceImpl implements TransactionService {
         }
 
         if (amount >= LARGE_TRANSFER_LIMIT) {
-            fraudService.recordFraud(
+            fraudService.logFraud(
                     fromAccount.getUser().getUsername(),
                     "Large fund transfer: ₹" + amount);
         }

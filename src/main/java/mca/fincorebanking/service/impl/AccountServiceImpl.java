@@ -139,4 +139,17 @@ public class AccountServiceImpl implements AccountService {
         return accountRepository.findByStatus(pending_admin);
     }
 
+    @Override
+    public void freezeAccountByUsername(String username) {
+        List<Account> accounts = accountRepository.findByUserUsername(username);
+        if (accounts.isEmpty()) {
+            throw new RuntimeException("No accounts found for user: " + username);
+        }
+        
+        for (Account acc : accounts) {
+            acc.setStatus("FROZEN");
+            accountRepository.save(acc);
+        }
+    }
+
 }

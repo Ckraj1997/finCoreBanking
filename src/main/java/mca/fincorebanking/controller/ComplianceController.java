@@ -40,15 +40,41 @@ public class ComplianceController {
         model.addAttribute("frauds", fraudService.getAllFraudLogs());
         return "compliance-fraud";
     }
+    // ⚡ ACTION: FREEZE ACCOUNT
+    // @PostMapping("/actions/freeze-account")
+    // public String freezeAccount(@RequestParam Long accountId, RedirectAttributes redirect) {
+    //     try {
+    //         accountService.updateAccountStatus(accountId, "FROZEN");
+    //         // ❌ Removed manual auditService.log() -> Handled by GlobalAuditAspect
+    //         redirect.addFlashAttribute("success", "Account ID " + accountId + " has been FROZEN.");
+    //     } catch (Exception e) {
+    //         redirect.addFlashAttribute("error", "Failed to freeze account: " + e.getMessage());
+    //     }
+    //     return "redirect:/compliance/reports/fraud";
+    // }
 
-    // ⚡ ACTION: ENFORCEMENT (COMPLIANCE Role Only)
-    // This allows Compliance to FREEZE an account suspect of fraud
+    // 🚩 ACTION: MANUAL FRAUD FLAG
+    @PostMapping("/actions/flag-user")
+    public String flagUser(@RequestParam String username, @RequestParam String reason, RedirectAttributes redirect) {
+        try {
+            fraudService.logFraud(username, "MANUAL FLAG: " + reason);
+            // ❌ Removed manual auditService.log() -> Handled by GlobalAuditAspect
+            redirect.addFlashAttribute("success", "User " + username + " flagged as suspicious.");
+        } catch (Exception e) {
+            redirect.addFlashAttribute("error", "Error flagging user: " + e.getMessage());
+        }
+        return "redirect:/compliance/reports/fraud";
+    }
+
     @PostMapping("/actions/freeze-account")
-    public String freezeAccount(@RequestParam Long accountId, RedirectAttributes redirect) {
-        // You will need to implement this method in AccountService
-        accountService.updateAccountStatus(accountId, "FROZEN"); 
-        
-        redirect.addFlashAttribute("success", "Account Frozen Successfully.");
+    public String freezeUser(@RequestParam String username, RedirectAttributes redirect) {
+        try {
+            accountService.freezeAccountByUsername(username);
+            // Auto-audit logging handled by Aspect
+            redirect.addFlashAttribute("success", "All accounts for user '" + username + "' have been FROZEN.");
+        } catch (Exception e) {
+            redirect.addFlashAttribute("error", "Failed to freeze user: " + e.getMessage());
+        }
         return "redirect:/compliance/reports/fraud";
     }
 }

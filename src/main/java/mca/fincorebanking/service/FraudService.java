@@ -6,7 +6,7 @@ import mca.fincorebanking.entity.FraudLog;
 
 public interface FraudService {
 
-    void recordFraud(String username, String reason);
+    void logFraud(String username, String reason);
 
     long countFrauds();
 

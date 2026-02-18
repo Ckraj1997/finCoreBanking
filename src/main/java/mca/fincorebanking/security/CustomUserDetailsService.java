@@ -37,7 +37,7 @@ public class CustomUserDetailsService implements UserDetailsService {
         }
 
         if (user.getFailedAttempts() >= 3) {
-            fraudService.recordFraud(
+            fraudService.logFraud(
                     user.getUsername(),
                     "Multiple failed login attempts"
             );
